@@ -14,10 +14,18 @@ const { messages, input, handleSubmit } = useChat();
 
         <div class="input-container">
             <form @submit="handleSubmit">
-                <input
-                    v-model="input"
-                    placeholder="Say something..."
-                />
+                <div class="input-wrapper">
+                    <input
+                        v-model="input"
+                        placeholder="Say something..."
+                    />
+                    <button type="submit" aria-label="送信">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="19" x2="12" y2="5"></line>
+                            <polyline points="5 12 12 5 19 12"></polyline>
+                        </svg>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -39,19 +47,18 @@ const { messages, input, handleSubmit } = useChat();
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 10px;
   padding-bottom:80px;
 }
 
 .chat-message {
   padding: 1em;
-  margin: .5em;
+  margin: .5em 0;
 }
 
 .user-message {
   align-self: flex-end;
   background-color: #f3f3f3;
-  border-radius: 1em;
+  border-radius: 2em;
 }
 
 .ai-message {
@@ -60,7 +67,7 @@ const { messages, input, handleSubmit } = useChat();
 
 .input-container {
   display: flex;
-  margin: 0 auto;
+  margin-bottom: 1em;
   padding: 1em;
   position: fixed;
   bottom: 0;
@@ -70,17 +77,47 @@ const { messages, input, handleSubmit } = useChat();
   box-sizing: border-box;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
-  border-radius: 1em; 
+  border-radius: 2em; 
 }
 
 form {
     width: 100%;
 }
 
+.input-wrapper {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #01172b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #44505b;
+}
+
+button svg {
+    width: 20px;
+    height: 20px;
+}
+
 input {
-  width: 100%;
-  outline: none;
-  border: none;
-  box-sizing: border-box;
+    flex: 1;
+    width: auto;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
 }
 </style>
