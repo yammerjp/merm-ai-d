@@ -1,23 +1,95 @@
 <script setup lang="ts">
 import { useChat } from '@ai-sdk/vue';
-
+import type { Root } from 'mdast';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import { computedAsync } from '@vueuse/core';
+import MarkdownNode from '@/components/MarkdownNode.vue';
 const { messages, input, handleSubmit } = useChat({
   initialMessages: [
     {
       id: 'default-ai',
       role: 'assistant',
-      content: 'こんにちは！何かお手伝いできることはありますか？'
-    },
+      content: `
+# タイトル
+
+## セクション1
+
+これは段落です。Markdownでは、**太字**や*斜体*を使うことができます。
+
+- リストアイテム1
+- リストアイテム2
+  - サブアイテム1
+  - サブアイテム2
+
+1. 番号付きリストアイテム1
+2. 番号付きリストアイテム2
+
+### セクション2
+
+> これは引用です。
+
+[リンクのテキスト](https://example.com)
+
+![代替テキスト](https://via.placeholder.com/150)
+
+\`\`\`python
+# これはコードブロックです
+def hello_world():
+    print("Hello, world!")
+\`\`\`
+
+- [ ] 未完了のタスク
+- [x] 完了したタスク
+
+---
+
+## セクション3
+
+**テーブルの例**
+
+| ヘッダー1 | ヘッダー2 |
+|-----------|-----------|
+| 行1      | 行1のデータ |
+| 行2      | 行2のデータ |
+    `,
+    }
   ]
 });
+
+const markdownParser = unified().use(remarkParse).use(remarkGfm);
+
+type StructuredMessage = {
+  id: string;
+  isAssistant: boolean;
+  content: string;
+  mdast: Root;
+}
+
+const structuredMessages = computedAsync(async (): Promise<StructuredMessage[]> => {
+  return await Promise.all(messages.value.map(async (m) => {
+    return {
+      id: m.id,
+      isAssistant: m.role === 'assistant',
+      content: m.content,
+      mdast: await markdownParser.parse(m.content)
+    }
+  }))
+})
 </script>
 
 <template>
     <div class="chat-page">
         <div class="chat-container">
-            <div v-for="m in messages" :key="m.id" :class="['chat-message', m.role === 'user' ? 'user-message' : 'ai-message']">
-            {{ m.content }}
-            </div>
+            <template v-for="m in structuredMessages" :key="m.id">
+                <div v-if="m.isAssistant" class="chat-message ai-message">
+                    <MarkdownNode :node="m.mdast" />
+                </div>
+                <div v-else class="chat-message user-message">
+                    {{ m.content }}
+                </div>
+            </template>
         </div>
 
         <div class="input-container">
@@ -67,6 +139,7 @@ const { messages, input, handleSubmit } = useChat({
   align-self: flex-end;
   background-color: #f3f3f3;
   border-radius: 2em;
+  white-space: pre-wrap;
 }
 
 .ai-message {
