@@ -84,7 +84,7 @@ const structuredMessages = computedAsync(async (): Promise<StructuredMessage[]> 
         <div class="chat-container">
             <template v-for="m in structuredMessages" :key="m.id">
                 <div v-if="m.isAssistant" class="chat-message ai-message">
-                    <MarkdownNode :node="m.mdast" />
+                    <MarkdownNode :node="m.mdast"/>
                 </div>
                 <div v-else class="chat-message user-message">
                     {{ m.content }}

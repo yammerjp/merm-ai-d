@@ -3,86 +3,130 @@ import type { Root } from 'mdast';
 import MarkdownContent from './MarkdownContent.vue';
 
 defineProps<{
-    node: Root[];
+  node: Root[];
 }>();
 </script>
 
 <template>
-    <template v-if="node.type === 'root'">
-        <div class="markdown-body"><MarkdownContent :node="node" /></div>
-    </template>
-    <template v-else-if="node.type === 'text'">
+  <template v-if="node.type === 'root'">
+    <div class="markdown-body">
       <MarkdownContent :node="node" />
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 1">
-        <h1><MarkdownContent :node="node" /></h1>
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 2">
-        <h2><MarkdownContent :node="node" /></h2>
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 3">
-        <h3><MarkdownContent :node="node" /></h3>
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 4">
-        <h4><MarkdownContent :node="node" /></h4>
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 5">
-        <h5><MarkdownContent :node="node" /></h5>
-    </template>
-    <template v-else-if="node.type === 'heading' && node.depth === 6">
-      <h6><MarkdownContent :node="node" /></h6>
-    </template>
-    <template v-else-if="node.type === 'paragraph'">
-        <p><MarkdownContent :node="node" /></p>
-    </template>
-    <template v-else-if="node.type === 'strong'">
-        <strong><MarkdownContent :node="node" /></strong>
-    </template>
-    <template v-else-if="node.type === 'emphasis'">
-        <em><MarkdownContent :node="node" /></em>
-    </template>
-    <template v-else-if="node.type === 'list'">
-        <ul><MarkdownContent :node="node" /></ul>
-    </template>
-    <template v-else-if="node.type === 'listItem'">
-        <li><MarkdownContent :node="node" /></li>
-    </template>
-    <template v-else-if="node.type === 'blockquote'">
-        <blockquote><MarkdownContent :node="node" /></blockquote>
-    </template>
-    <template v-else-if="node.type === 'link'">
-        <a :href="node.url"><MarkdownContent :node="node" /></a>
-    </template>
-    <template v-else-if="node.type === 'image'">
-        <img :src="node.url" :alt="node.alt" />
-    </template>
-    <template v-else-if="node.type === 'code'">
-        <pre><code><MarkdownContent :node="node" /></code></pre>
-    </template>
-    <template v-else-if="node.type === 'thematicBreak'">
-        <hr />
-    </template>
-    <template v-else-if="node.type === 'table'">
-        <table><MarkdownContent :node="node" /></table>
-    </template>
-    <template v-else-if="node.type === 'tableRow'">
-        <tr><MarkdownContent :node="node" /></tr>
-    </template>
-    <template v-else-if="node.type === 'tableCell'">
-        <td><MarkdownContent :node="node" /></td>
-    </template>
-    <template v-else-if="node.type === 'inlineCode'">
-      <code><MarkdownContent :node="node" /></code>
-    </template>
-    <template v-else-if="node.type === 'delete'">
-      <del><MarkdownContent :node="node" /></del>
-    </template>
-    <template v-else-if="node.type === 'html'">
-      <code><MarkdownContent :node="node" /></code>
-    </template>
-    <template v-else>
-        not supported: {{ JSON.stringify(node) }}
-    </template>
+    </div>
+  </template>
+  <template v-else-if="node.type === 'text'">
+    <MarkdownContent :node="node" />
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 1">
+    <h1>
+      <MarkdownContent :node="node" />
+    </h1>
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 2">
+    <h2>
+      <MarkdownContent :node="node" />
+    </h2>
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 3">
+    <h3>
+      <MarkdownContent :node="node" />
+    </h3>
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 4">
+    <h4>
+      <MarkdownContent :node="node" />
+    </h4>
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 5">
+    <h5>
+      <MarkdownContent :node="node" />
+    </h5>
+  </template>
+  <template v-else-if="node.type === 'heading' && node.depth === 6">
+    <h6>
+      <MarkdownContent :node="node" />
+    </h6>
+  </template>
+  <template v-else-if="node.type === 'paragraph'">
+    <p>
+      <MarkdownContent :node="node" />
+    </p>
+  </template>
+  <template v-else-if="node.type === 'strong'">
+    <strong>
+      <MarkdownContent :node="node" />
+    </strong>
+  </template>
+  <template v-else-if="node.type === 'emphasis'">
+    <em>
+      <MarkdownContent :node="node" />
+    </em>
+  </template>
+  <template v-else-if="node.type === 'list' && node.ordered">
+    <ol>
+      <MarkdownContent :node="node" />
+    </ol>
+  </template>
+  <template v-else-if="node.type === 'list' && !node.ordered">
+    <ul>
+      <MarkdownContent :node="node" />
+    </ul>
+  </template>
+  <template v-else-if="node.type === 'listItem'">
+    <li><input type="checkbox" v-model="node.checked" v-if="typeof node.checked === 'boolean'" readonly />
+      <MarkdownContent :node="node" />
+    </li>
+  </template>
+  <template v-else-if="node.type === 'blockquote'">
+    <blockquote>
+      <MarkdownContent :node="node" />
+    </blockquote>
+  </template>
+  <template v-else-if="node.type === 'link'">
+    <a :href="node.url">
+      <MarkdownContent :node="node" />
+    </a>
+  </template>
+  <template v-else-if="node.type === 'image'">
+    <img :src="node.url" :alt="node.alt" />
+  </template>
+  <template v-else-if="node.type === 'code'">
+    <pre><code><MarkdownContent :node="node" /></code></pre>
+  </template>
+  <template v-else-if="node.type === 'thematicBreak'">
+    <hr />
+  </template>
+  <template v-else-if="node.type === 'table'">
+    <table>
+      <MarkdownContent :node="node" />
+    </table>
+  </template>
+  <template v-else-if="node.type === 'tableRow'">
+    <tr>
+      <MarkdownContent :node="node" />
+    </tr>
+  </template>
+  <template v-else-if="node.type === 'tableCell'">
+    <td>
+      <MarkdownContent :node="node" />
+    </td>
+  </template>
+  <template v-else-if="node.type === 'inlineCode'">
+    <code><MarkdownContent :node="node" /></code>
+  </template>
+  <template v-else-if="node.type === 'delete'">
+    <del>
+      <MarkdownContent :node="node" />
+    </del>
+  </template>
+  <template v-else-if="node.type === 'html'">
+    <code><MarkdownContent :node="node" /></code>
+  </template>
+  <template v-else-if="node.type === 'break'">
+    <br />
+  </template>
+  <template v-else>
+    {{ JSON.stringify(node) }}
+  </template>
 </template>
 
 <style scoped>
@@ -98,8 +142,11 @@ defineProps<{
   --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
   --fgColor-accent: Highlight;
 }
+
 @media (prefers-color-scheme: dark) {
-  .markdown-body, [data-theme="dark"] {
+
+  .markdown-body,
+  [data-theme="dark"] {
     /* dark */
     color-scheme: dark;
     --focus-outlineColor: #1f6feb;
@@ -154,8 +201,11 @@ defineProps<{
     --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
   }
 }
+
 @media (prefers-color-scheme: light) {
-  .markdown-body, [data-theme="light"] {
+
+  .markdown-body,
+  [data-theme="light"] {
     /* light */
     color-scheme: light;
     --focus-outlineColor: #0969da;
@@ -217,7 +267,7 @@ defineProps<{
   margin: 0;
   color: var(--fgColor-default);
   background-color: var(--bgColor-default);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -1185,7 +1235,7 @@ defineProps<{
 .markdown-body g-emoji {
   display: inline-block;
   min-width: 1ch;
-  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1em;
   font-style: normal !important;
   font-weight: var(--base-text-weight-normal, 400);
@@ -1313,6 +1363,4 @@ defineProps<{
 .markdown-body .highlight pre:has(+.zeroclipboard-container) {
   min-height: 52px;
 }
-
-
 </style>
