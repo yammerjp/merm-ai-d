@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { useChat } from '@ai-sdk/vue';
 
-const { messages, input, handleSubmit } = useChat();
+const { messages, input, handleSubmit } = useChat({
+  initialMessages: [
+    {
+      id: 'default-ai',
+      role: 'assistant',
+      content: 'こんにちは！何かお手伝いできることはありますか？'
+    },
+  ]
+});
 </script>
 
 <template>
@@ -17,7 +25,7 @@ const { messages, input, handleSubmit } = useChat();
                 <div class="input-wrapper">
                     <input
                         v-model="input"
-                        placeholder="Say something..."
+                        placeholder="質問してみましょう"
                     />
                     <button type="submit" aria-label="送信">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,7 +43,7 @@ const { messages, input, handleSubmit } = useChat();
 .chat-page {
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding: 0 1em;
   display: flex;
   flex-direction: column;
   max-width: 768px;
@@ -47,15 +55,15 @@ const { messages, input, handleSubmit } = useChat();
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding-bottom:80px;
+  padding-bottom: 120px;
 }
 
 .chat-message {
-  padding: 1em;
-  margin: .5em 0;
+  margin: 1em 0;
 }
 
 .user-message {
+  padding: 1em;
   align-self: flex-end;
   background-color: #f3f3f3;
   border-radius: 2em;
@@ -71,7 +79,9 @@ const { messages, input, handleSubmit } = useChat();
   padding: 1em;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2em);
   max-width: 768px;
   background: white;
   box-sizing: border-box;
